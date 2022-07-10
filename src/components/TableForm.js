@@ -21,36 +21,44 @@ export default function TableForm({
 
   const [isEditing, setIsEditing] = useState(false)
 
+  //const newItems = {}
+
+
   // Submit form 
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    // uuid generates unique IDs for every time we submit the items from the form
-    const newItems = {
-      id: uuidv4(),
-      description,
-      quantity,
-      amount,
-      price
+    if ( !description || !quantity || !price ) {
+        alert("Please fill in all inputs.")
+    } else {
+      // uuid generates unique IDs for every time we submit the items from the form
+      const newItems = {
+        id: uuidv4(),
+        description,
+        quantity,
+        amount,
+        price
+      }
+      // set values back to empty string
+
+        /** NOTES...
+         * 
+         * The rest operator (…) allows us to call a function with any number of arguments and then access those excess arguments as an array. The rest operator also allows us in destructuring array or objects.
+         *  
+         * The spread operator (…) allows us to expand an iterable like array into its individual elements.
+         * 
+        */
+        setDescription("")
+        setQuantity("")
+        setAmount("")
+        setPrice("")
+        setList([...list, newItems]) // spread operator - get all items already in the list and add in the new items. if no items just pass in new items.
+        setIsEditing(false) // allows add item buttonm to toggle lable correctly (EXPLAIN MORE LATER)
+
+        //test list
+        console.log(list)
+      
     }
-    // set vallues back to empty string
-
-    /** NOTES...
-     * 
-     * The rest operator (…) allows us to call a function with any number of arguments and then access those excess arguments as an array. The rest operator also allows us in destructuring array or objects.
-     *  
-     * The spread operator (…) allows us to expand an iterable like array into its individual elements.
-     * 
-    */
-    setDescription("")
-    setQuantity("")
-    setAmount("")
-    setPrice("")
-    setList([...list, newItems]) // spread operator - get all items already in the list and add in the new items. if no items just pass in new items.
-    setIsEditing(false) // allows add item buttonm to toggle lable correctly (EXPLAIN MORE LATER)
-
-    //test list
-    console.log(list)
   }
 
   // Calculate items price amount

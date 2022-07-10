@@ -1,4 +1,4 @@
-import { useState } from "react"; // to manage local state
+import { useState, useRef } from "react"; // useState hook to manage local state | useRef hook to initialize ReactToPrint props
 import Header from "./components/Header";
 import MainDetails from "./components/MainDetails";
 import ClientDetails from "./components/ClientDetails";
@@ -7,80 +7,100 @@ import Table from "./components/Table";
 import TableForm from "./components/TableForm";
 import Notes from "./components/Notes";
 import Footer from "./components/Footer";
+import ReactToPrint from "react-to-print"; 
+
+/** React To Print ** 
+ * https://www.npmjs.com/package/react-to-print
+ * 
+ * import React, { useRef } from 'react';
+ * import ReactToPrint from 'react-to-print';
+ * import { ComponentToPrint } from './ComponentToPrint';
+
+        const Example = () => {
+          const componentRef = useRef();
+
+          return (
+            <div>
+              <ReactToPrint
+                trigger={() => <button>Print this out!</button>}
+                content={() => componentRef.current}
+              />
+              <ComponentToPrint ref={componentRef} />
+            </div>
+          );
+        }; 
+ * 
+ */
 
 function App() {
 // create state values and set them to false by default...
 // We will use them to render components based on a condition
-const [showInvoice, setShowInvoice] = useState(false);
+const [showInvoice, setShowInvoice] = useState(false); // false - show form by default
 // states we will need to manage for the invoice form section - default values added for developemnt
-const [name, setName] = useState("John Doe");
-const [email, setEmail] = useState("johndoe@gmail.com");
-const [address, setAddress] = useState("123 Main St. Springfield, Il 60612");
-const [phone, setPhone] = useState("312-555-5555");
-const [bankName, setBankName] = useState("JPMorgan Chase");
-const [bankAccountNumber, setBankAccountNumber] = useState("123456789");
-const [website, setWebsite] = useState("http://www.jdoe.com");
-const [clientName, setClientName] = useState("Mary Smith");
-const [clientAddress, setClientAddress] = useState("789 Cherry Lane, Detroit, MI");
-const [invoiceNumber, setInvoiceNumber] = useState("4767");
-const [invoiceDate, setInvoiceDate] = useState("12/15/2020");
-const [dueDate, setDueDate] = useState("1/15/2021");
-const [notes, setNotes] = useState("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec molestie suscipit risus sit amet iaculis. Nunc non felis porta, dapibus tortor in, imperdiet ligula. Integer eu mattis nisl, tincidunt vehicula dui. Mauris egestas diam libero, ultrices pharetra quam lobortis sed. Maecenas egestas a purus elementum auctor. ");
-const [description, setDescription] = useState("Nunc non felis porta, dapibus tortor in, imperdiet ligula.");
-const [quantity, setQuantity] = useState("10"); 
-const [price, setPrice] = useState("15000"); 
+const [name, setName] = useState("");
+const [email, setEmail] = useState("");
+const [address, setAddress] = useState("");
+const [phone, setPhone] = useState("");
+const [bankName, setBankName] = useState("");
+const [bankAccountNumber, setBankAccountNumber] = useState("");
+const [website, setWebsite] = useState("");
+const [clientName, setClientName] = useState("");
+const [clientAddress, setClientAddress] = useState("");
+const [invoiceNumber, setInvoiceNumber] = useState("");
+const [invoiceDate, setInvoiceDate] = useState("");
+const [dueDate, setDueDate] = useState("");
+const [notes, setNotes] = useState("");
+const [description, setDescription] = useState("");
+const [quantity, setQuantity] = useState(""); 
+const [price, setPrice] = useState(""); 
 const [amount, setAmount] = useState(""); 
 const [list, setList] = useState([]);
 const [total, setTotal] = useState(0);
+
+// initialize useRef hook
+const componentRef = useRef()
 
   const handlePrint = () => {
     window.print()
   }
   return (
-      <main className="m-5 p-5 md:max-w-xl md:mx-auto lg:max-w-2xl xl:max-w-4xl bg-white rounded shadow">
-      {/* If showInvoice is true, render components, or else render the form input CHANGE NOTES TO EXPLAIN WHY */}
-      {showInvoice ? 
-        <div>
-          {/* Header */}
-          {/* Pass handlePrint in as a prop here then pass it to the Header function in Header.js as a destructured prop */}
-          <Header handlePrint={handlePrint} />
-          {/* End of Header */}
+    <main className="m-5 p-5 md:max-w-xl md:mx-auto lg:max-w-2xl xl:max-w-4xl bg-white rounded shadow">
+       {/* If showInvoice is true, render components, or else render the form input */}
+      {showInvoice ? (
+        <>
+          <ReactToPrint 
+            // returns a button
+            trigger={() => <button className="bg-blue-500 text-white font-bold py-2 px-8 rounded shadow border-2 border-blue-500 hover:bg-transparent hover:text-blue-500 transition-all duration-300 ml-5">Print / Download</button>} 
+            // https://rossbulat.medium.com/how-to-use-react-refs-4541a7501663 - "current refers to the element the ref is currently attached to, and is used extensively to access and modify our attached element."
+            content={() => componentRef.current}  
+          />
 
-          {/* Main Details */}
-          {/* Pass in name, address, email as props EXPLAIN WHY HERE */}
-          <MainDetails name={name} address={address} />
-          {/* End of Main Details */}
+          <div ref={componentRef} className="p-5">
+            {/* Pass handlePrint in as a prop here then pass it to the Header function in Header.js as a destructured prop */}
+            <Header handlePrint={handlePrint} />
+            {/* Pass in name, address, email as props */}
+            <MainDetails name={name} address={address} />
+            <ClientDetails clientName={clientName} clientAddress={clientAddress} />
+            <Dates invoiceNumber={invoiceNumber} invoiceDate={invoiceDate} dueDate={dueDate} />
+            <Table
+              description={description}
+              quantity={quantity}
+              price={price} 
+              amount={amount} 
+              list={list}
+              setList={setList}
+              total={total}
+              setTotal={setTotal}
+            />
+            <Notes notes={notes} />
+            <Footer name={name} email={email} phone={phone} website={website} bankAccountNumber={bankAccountNumber} bankName={bankName} />
+          </div>
 
-          {/* Client Details */}
-          <ClientDetails clientName={clientName} clientAddress={clientAddress} />
-          {/* End of Client Details */}
-
-          {/* Dates */}
-          <Dates invoiceNumber={invoiceNumber} invoiceDate={invoiceDate} dueDate={dueDate} />
-          {/* End of Dates */}
-
-          {/* Table */}
-          <Table
-            description={description}
-            quantity={quantity}
-            price={price} 
-            amount={amount} 
-            list={list}
-            setList={setList}
-            total={total}
-            setTotal={setTotal}
-           />
-          {/* End of Table */}
-
-          {/* Notes */}
-          <Notes notes={notes} />
-          {/* End of Notes */}
-
-          {/* Footer */}
-          <Footer name={name} email={email} phone={phone} website={website} bankAccountNumber={bankAccountNumber} bankName={bankName} />
-          <button onClick={() => setShowInvoice(false)} className="mt-5 bg-blue-500 text-white font-bold py-2 px-8 rounded shadow border-2 border-blue-500 hover:bg-transparent hover:text-blue-500 transition-all duration-300">Edit Information</button>
-          {/* End of Footer */}
-        </div> : (
+          <button 
+          onClick={() => setShowInvoice(false)} 
+          className="mt-5 bg-blue-500 text-white font-bold py-2 px-8 rounded shadow border-2 border-blue-500 hover:bg-transparent hover:text-blue-500 transition-all duration-300">Edit Information</button>
+        </>
+        ) : (
           <>
           {/* State values that you will need to add: name, address, email, phone, bank name, bank account number, website, client name, client address, invoice number, invoice date, due date, notes */}
           <div className="flex flex-col justify-center">
