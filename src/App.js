@@ -31,6 +31,7 @@ const [quantity, setQuantity] = useState("10");
 const [price, setPrice] = useState("15000"); 
 const [amount, setAmount] = useState(""); 
 const [list, setList] = useState([]);
+const [total, setTotal] = useState(0);
 
   const handlePrint = () => {
     window.print()
@@ -66,6 +67,8 @@ const [list, setList] = useState([]);
             amount={amount} 
             list={list}
             setList={setList}
+            total={total}
+            setTotal={setTotal}
            />
           {/* End of Table */}
 
@@ -269,7 +272,10 @@ const [list, setList] = useState([]);
             amount={amount} 
             setAmount={setAmount}
             list={list}
-            setList={setList} />
+            setList={setList}
+            total={total}
+            setTotal={setTotal} 
+            />
           </section>
           
           {/* <section className="">
